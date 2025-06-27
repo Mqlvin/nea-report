@@ -15,7 +15,7 @@ class PythonHandler(SourceHandler):
         for line in lined_file:
             content = line.replace(" ", "")  # just strip the line for ease
 
-            if content.startswith("'''"):
+            if content.startswith("'''") and content.startswith('"""'):
                 if not comment_open:
                     comment_open = True
                 else:
