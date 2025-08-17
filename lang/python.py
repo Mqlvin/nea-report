@@ -28,7 +28,6 @@ def is_function_below(src_lines: List[str], test_line: int) -> bool:
         if src_lines[test_line].replace(" ", "").startswith("def"):
             return True
         elif src_lines[test_line].replace(" ", "").startswith("@"):
-            print("skipping one")
             test_line += 1
             continue
         else:

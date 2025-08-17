@@ -13,8 +13,8 @@ doc = word.Doc()
 
 
 # base_dir = os.path.expanduser(input("Enter the top-level source directory: "))
-base_dir = "./test"
-input("Press enter to generate function listing...")
+base_dir = "./"
+v = input("Press enter to generate function listing... (or `v` for debugging)") == "v"
 # what the fuck
 rel_items = {os.path.join(dp, f):os.path.relpath(os.path.join(dp, f), base_dir) for dp, _, fn in os.walk(os.path.expanduser(base_dir)) for f in fn}
 
@@ -27,16 +27,23 @@ target_items = {}
 for (ext, handler_class) in ext_map.items():
     target_items.update({base:ext for (base, rel) in rel_items.items() if rel.endswith(ext)})
 
+if v:
+    for (i, _) in rel_items.items():
+        print(f"Identified file: {i}")
+
 
 for (file_path, ext) in target_items.items():
     # try read file
     with open(file_path, "r") as fh:
+        if v:
+            print(f"Reading {file_path}")
+
         lines = fh.readlines()
         lines = [line.rstrip('\n') for line in lines]
         lines = list(filter(lambda line: line.replace(" ", "").strip() != "", lines)) # remove blank lines
 
-        print(f"from {file_path}")
         blocks = PythonHandler().extract_comments(lines)
+        print(f"Extracted {len(blocks)} comment blocks")
 
         # transform content field into array of stripped lines, remove empty lines
         for b in blocks:
@@ -71,19 +78,12 @@ for (file_path, ext) in target_items.items():
                 print(f"Unknown type: {b["type"]}. Ignoring.")
 
 
-        for b in blocks:
-            if b["function"]:
-                print(b["content"])
-
-
         comments = [b["content"] for b in blocks]
 
         all_features = []
         for comment in comments:
             features = handler.get_features(comment)
             all_features.append(features)
-
-        print(all_features)
 
         doc.add_features(rel_items[file_path], all_features)
 

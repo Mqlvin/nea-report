@@ -17,10 +17,10 @@ class Doc:
 
         for (idx, map) in enumerate(feature_maps):
             values = table.rows[idx + 1].cells
-            values[0].text = map["Name"]
-            values[1].text = map["Parameters"]
-            values[2].text = map["Returns"]
-            values[3].text = map["Purpose"]
+            values[0].text = map.get("Name", "!! Unknown name !!")
+            values[1].text = map.get("Parameters", "!! Unknown parameters !!")
+            values[2].text = map.get("Returns", "!! Unknown return value !!")
+            values[3].text = map.get("Purpose", "!! Unknown purpose !!")
 
     def save(self, path):
         self.doc.save(path)
